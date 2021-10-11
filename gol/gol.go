@@ -4,10 +4,10 @@ func calculateNextState(p golParams, world [][]byte) [][]byte {
 	for y := 0; y < p.imageHeight; y++ {
 		for x := 0; x < p.imageWidth; x++ {
 			if theydie(x, y, world, p) && world[x][y] == 255 {
-				world[x][y] = 0
+				world[y][x] = 0
 			}
 			if theyreanimate(x, y, world, p) && world[x][y] == 0 {
-				world[x][y] = 255
+				world[y][x] = 255
 			}
 		}
 	}
@@ -19,8 +19,8 @@ func calculateAliveCells(p golParams, world [][]byte) []cell {
 	cells := []cell{}
 	for y := 0; y < p.imageHeight; y++ {
 		for x := 0; x < p.imageWidth; x++ {
-			if world[x][y] == 255 {
-				liveCell := cell{x, y}
+			if world[y][x] == 255 {
+				liveCell := cell{y, x}
 				cells = append(cells, liveCell)
 			}
 		}
