@@ -1,18 +1,16 @@
 package main
 
-import "fmt"
-
 func calculateNextState(p golParams, world [][]byte) [][]byte {
-	sum := 0
+	//Make a new world as a list of lists, copying previous world data
 	newworld := make([][]byte, p.imageHeight)
-	for i := 0; i < p.imageWidth; i++ {
-		newworld[i] = make([]byte, p.imageWidth)
+	for i := 0; i < p.imageHeight; i++ {
+		newworld[i] = make([]byte, p.imageHeight)
 		copy(newworld[i], world[i])
 	}
-
+	//Counting the values of neighboring cells
 	for y := 0; y < p.imageHeight; y++ {
 		for x := 0; x < p.imageWidth; x++ {
-			/*count := int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
+			count := int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
 			count += int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight)%p.imageHeight])
 			count += int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
 			count += int(world[(y+p.imageWidth)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
@@ -21,16 +19,14 @@ func calculateNextState(p golParams, world [][]byte) [][]byte {
 			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight)%p.imageHeight])
 			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
 			count = count / 255
-			sum = count */
-
-			sum = howmanyneighbors(y, x, world, p)
-			if sum == 3 {
+			//Death / reanimation logic for the current cell
+			if count == 3 {
 				newworld[y][x] = 255
 			}
 			if world[y][x] != 0 {
-				if sum < 2 {
+				if count < 2 {
 					newworld[y][x] = 0
-				} else if sum == 2 || sum == 3 {
+				} else if count == 2 || count == 3 {
 					newworld[y][x] = 255
 				} else {
 					newworld[y][x] = 0
@@ -43,6 +39,7 @@ func calculateNextState(p golParams, world [][]byte) [][]byte {
 }
 
 func calculateAliveCells(p golParams, world [][]byte) []cell {
+	//Given the current image count all alive cells and return
 	cells := []cell{}
 	for y := 0; y < p.imageHeight; y++ {
 		for x := 0; x < p.imageWidth; x++ {
@@ -52,52 +49,5 @@ func calculateAliveCells(p golParams, world [][]byte) []cell {
 			}
 		}
 	}
-	fmt.Println(cells)
 	return cells
 }
-func howmanyneighbors(y, x int, world [][]byte, p golParams) int {
-	alive := 0
-	for i := -1; i < 2; i++ {
-		for j := -1; j < 2; j++ {
-			if world[(y+i+p.imageHeight)%p.imageHeight][(x+j+p.imageWidth)%p.imageWidth] == 255 {
-				alive += 1
-			}
-		}
-	}
-	if world[y][x] == 255 {
-		alive -= 1
-	}
-	return alive
-}
-
-/*func checkNumNeighbors(y, x int, world [][]byte, p golParams) int {
-	count := 0
-	count += int(world[((x + p.imageWidth - 1) % p.imageWidth)][(y+p.imageHeight-1)%p.imageHeight])
-	count += int(world[((x + p.imageWidth - 1) % p.imageWidth)][(y+p.imageHeight)%p.imageHeight])
-	count += int(world[((x + p.imageWidth - 1) % p.imageWidth)][(y+p.imageHeight+1)%p.imageHeight])
-	count += int(world[((x + p.imageWidth) % p.imageWidth)][(y+p.imageHeight-1)%p.imageHeight])
-	count += int(world[((x + p.imageWidth) % p.imageWidth)][(y+p.imageHeight+1)%p.imageHeight])
-	count += int(world[((x + p.imageWidth + 1) % p.imageWidth)][(y+p.imageHeight-1)%p.imageHeight])
-	count += int(world[((x + p.imageWidth + 1) % p.imageWidth)][(y+p.imageHeight)%p.imageHeight])
-	count += int(world[((x + p.imageWidth + 1) % p.imageWidth)][(y+p.imageHeight+1)%p.imageHeight])
-	fmt.Print(count / 255)
-	return count / 255
-}
-
-func theydie(y, x int, world [][]byte, p golParams) bool {
-	count := checkNumNeighbors(y, x, world, p)
-	if count < 2 {
-		return true
-	} else if count == 2 || count == 3 {
-		return false
-	} else {
-		return false
-	}
-}
-func theyreanimate(y, x int, world [][]byte, p golParams) bool {
-	if checkNumNeighbors(y, x, world, p) == 3 {
-		return true
-	} else {
-		return false
-	}
-}*/
