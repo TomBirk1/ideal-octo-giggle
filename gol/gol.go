@@ -11,28 +11,26 @@ func calculateNextState(p golParams, world [][]byte) [][]byte {
 	for y := 0; y < p.imageHeight; y++ {
 		for x := 0; x < p.imageWidth; x++ {
 			count := int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
-			count += int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight)%p.imageHeight])
+			count += int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight+0)%p.imageHeight])
 			count += int(world[(y+p.imageWidth-1)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
-			count += int(world[(y+p.imageWidth)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
-			count += int(world[(y+p.imageWidth)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
+			count += int(world[(y+p.imageWidth+0)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
+			count += int(world[(y+p.imageWidth+0)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
 			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight-1)%p.imageHeight])
-			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight)%p.imageHeight])
+			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight+0)%p.imageHeight])
 			count += int(world[(y+p.imageWidth+1)%p.imageWidth][(x+p.imageHeight+1)%p.imageHeight])
-			count = count / 255
 			//Death / reanimation logic for the current cell
-			if count == 3 {
+			if count == 765 {
 				newworld[y][x] = 255
 			}
 			if world[y][x] != 0 {
-				if count < 2 {
+				if count < 510 {
 					newworld[y][x] = 0
-				} else if count == 2 || count == 3 {
+				} else if count == 510 || count == 765 {
 					newworld[y][x] = 255
 				} else {
 					newworld[y][x] = 0
 				}
 			}
-
 		}
 	}
 	return newworld
